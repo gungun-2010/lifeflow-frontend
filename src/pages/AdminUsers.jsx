@@ -5,9 +5,21 @@ const AdminUsers = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const [search, setSearch] = useState("");
+  const [role, setRole] = useState("");
+  const [status, setStatus] = useState("");
+
   const fetchUsers = async () => {
     try {
-      const res = await API.get("/admin/users");
+      setLoading(true);
+
+      const res = await API.get("/admin/users", {
+        params: {
+          search,
+          role,
+          status,
+        },
+      });
 
       setUsers(res.data.users);
     } catch (error) {
@@ -19,15 +31,7 @@ const AdminUsers = () => {
 
   useEffect(() => {
     fetchUsers();
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="p-10 text-xl font-semibold">
-        Loading users...
-      </div>
-    );
-  }
+  }, [search, role, status]);
 
   return (
     <div className="max-w-7xl mx-auto p-8">
@@ -43,101 +47,213 @@ const AdminUsers = () => {
         </p>
       </div>
 
-      {/* Table */}
-      <div className="bg-white rounded-3xl shadow-md overflow-hidden">
+      {/* Search + Filters */}
 
-        <table className="w-full">
+      <div className="bg-white rounded-3xl shadow-md p-6 mb-8">
 
-          <thead className="bg-gray-100">
+        <div className="grid md:grid-cols-3 gap-4">
 
-            <tr>
+          <input
+            type="text"
+            placeholder="Search by name, email or phone..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="
+              border
+              border-gray-300
+              rounded-xl
+              px-4
+              py-3
+              outline-none
+              focus:ring-2
+              focus:ring-red-500
+            "
+          />
 
-              <th className="text-left px-6 py-4">Name</th>
+          <select
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+            className="
+              border
+              border-gray-300
+              rounded-xl
+              px-4
+              py-3
+            "
+          >
+            <option value="">All Roles</option>
+            <option value="admin">Admin</option>
+            <option value="hospital">Hospital</option>
+            <option value="donor">Donor</option>
+          </select>
 
-              <th className="text-left px-6 py-4">Email</th>
+          <select
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+            className="
+              border
+              border-gray-300
+              rounded-xl
+              px-4
+              py-3
+            "
+          >
+            <option value="">All Status</option>
+            <option value="active">Active</option>
+            <option value="blocked">Blocked</option>
+          </select>
 
-              <th className="text-left px-6 py-4">Phone</th>
+        </div>
 
-              <th className="text-left px-6 py-4">Role</th>
+      </div>
 
-              <th className="text-left px-6 py-4">Location</th>
+      {/* Loading */}
 
-              <th className="text-left px-6 py-4">Status</th>
+      {loading ? (
 
-            </tr>
+        <div className="bg-white rounded-3xl shadow-md p-12 text-center">
 
-          </thead>
+          <h2 className="text-xl font-semibold">
+            Loading users...
+          </h2>
 
-          <tbody>
+        </div>
 
-            {users.map((user) => (
+      ) : (
 
-              <tr
-                key={user._id}
-                className="border-b hover:bg-gray-50 transition-all"
-              >
+        <div className="bg-white rounded-3xl shadow-md overflow-hidden">
 
-                <td className="px-6 py-5 font-semibold">
-                  {user.name}
-                </td>
+          <table className="w-full">
 
-                <td className="px-6 py-5">
-                  {user.email}
-                </td>
+            <thead className="bg-gray-100">
 
-                <td className="px-6 py-5">
-                  {user.phone}
-                </td>
+              <tr>
 
-                <td className="px-6 py-5">
+                <th className="text-left px-6 py-4">
+                  Name
+                </th>
 
-                  <span
-                    className={`px-3 py-1 rounded-full text-sm font-semibold
-                      ${
-                        user.role === "admin"
-                          ? "bg-purple-100 text-purple-700"
-                          : user.role === "hospital"
-                          ? "bg-green-100 text-green-700"
-                          : "bg-blue-100 text-blue-700"
-                      }
-                    `}
-                  >
-                    {user.role}
-                  </span>
+                <th className="text-left px-6 py-4">
+                  Email
+                </th>
 
-                </td>
+                <th className="text-left px-6 py-4">
+                  Phone
+                </th>
 
-                <td className="px-6 py-5">
-                  {user.location}
-                </td>
+                <th className="text-left px-6 py-4">
+                  Role
+                </th>
 
-                <td className="px-6 py-5">
+                <th className="text-left px-6 py-4">
+                  Location
+                </th>
 
-                  {user.isBlocked ? (
-
-                    <span className="text-red-600 font-bold">
-                      Blocked
-                    </span>
-
-                  ) : (
-
-                    <span className="text-green-600 font-bold">
-                      Active
-                    </span>
-
-                  )}
-
-                </td>
+                <th className="text-left px-6 py-4">
+                  Status
+                </th>
 
               </tr>
 
-            ))}
+            </thead>
 
-          </tbody>
+            <tbody>
 
-        </table>
+              {users.length === 0 ? (
 
-      </div>
+                <tr>
+
+                  <td
+                    colSpan="6"
+                    className="
+                      text-center
+                      py-10
+                      text-gray-500
+                    "
+                  >
+
+                    No users found.
+
+                  </td>
+
+                </tr>
+
+              ) : (
+
+                users.map((user) => (
+
+                  <tr
+                    key={user._id}
+                    className="
+                      border-b
+                      hover:bg-gray-50
+                      transition-all
+                    "
+                  >
+
+                    <td className="px-6 py-5 font-semibold">
+                      {user.name}
+                    </td>
+
+                    <td className="px-6 py-5">
+                      {user.email}
+                    </td>
+
+                    <td className="px-6 py-5">
+                      {user.phone}
+                    </td>
+
+                    <td className="px-6 py-5">
+
+                      <span
+                        className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                          user.role === "admin"
+                            ? "bg-purple-100 text-purple-700"
+                            : user.role === "hospital"
+                            ? "bg-green-100 text-green-700"
+                            : "bg-blue-100 text-blue-700"
+                        }`}
+                      >
+                        {user.role}
+                      </span>
+
+                    </td>
+
+                    <td className="px-6 py-5">
+                      {user.location}
+                    </td>
+
+                    <td className="px-6 py-5">
+
+                      {user.isBlocked ? (
+
+                        <span className="text-red-600 font-bold">
+                          Blocked
+                        </span>
+
+                      ) : (
+
+                        <span className="text-green-600 font-bold">
+                          Active
+                        </span>
+
+                      )}
+
+                    </td>
+
+                  </tr>
+
+                ))
+
+              )}
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      )}
 
     </div>
   );
