@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
-import axios from 'axios';
+import API from "../api/axios";
 
 const BloodDemandChart = () => {
   const [data, setData] = useState([]);
@@ -8,7 +8,7 @@ const BloodDemandChart = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await axios.get('http://localhost:5001/api/requests/stats/demand');
+        const response = await API.get('/requests/stats/demand');
         if (response.data.success) {
           // Recharts ko data { name: 'A+', value: 10 } format mein chahiye hota hai
           const formattedData = response.data.stats.map(item => ({

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Mail, Lock, LogIn } from 'lucide-react';
 import { toast, Toaster } from 'sonner';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import API from "../api/axios";
 
 const Login = () => {
 
@@ -64,9 +64,9 @@ const Login = () => {
         );
 
         const response =
-          await axios.post(
+          await API.post(
 
-            "http://localhost:5001/api/auth/login",
+            "/auth/login",
 
             {
               email,

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import API from "../api/axios";
 import { toast } from 'sonner';
 import { Droplet, Hospital, User, ClipboardList, AlertCircle } from 'lucide-react';
 
@@ -25,7 +25,7 @@ const RequestBlood = () => {
     try {
       // Note: Aapke routes ke hisaab se path '/api/requests/send' ya '/api/requests/hospital/create' ho sakta hai
       // Hum yahan general individual request bhej rahe hain
-      const res = await axios.post('http://localhost:5001/api/requests/send', formData);
+      const res = await API.post('/requests/send', formData);
       
       if (res.data.success) {
         toast.success("Blood request posted successfully!");

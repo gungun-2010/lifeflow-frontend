@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import API from "../api/axios";
 import { ArrowLeft, Clock, CheckCircle, XCircle, Inbox, Calendar, Droplet, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -11,7 +11,9 @@ const SentRequests = () => {
   useEffect(() => {
     const fetchSentRequests = async () => {
       try {
-        const res = await axios.get(`http://localhost:5001/api/requests/sent-requests/${user.phone}`);
+const res = await API.get(
+  `/requests/sent-requests/${user.phone}`
+);
         if (res.data.success) {
           setRequests(res.data.requests);
         }
@@ -141,3 +143,4 @@ const SentRequests = () => {
 };
 
 export default SentRequests;
+

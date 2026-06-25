@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 
 import { Link, Navigate } from 'react-router-dom';
-import axios from 'axios';
+import API from "../api/axios";
 
 const Dashboard = () => {
   useEffect(() => {
@@ -121,13 +121,14 @@ const Dashboard = () => {
 
         const userId = user._id || user.id;
 
-        const [privateRes, hospitalRes, statsRes] = await Promise.all([
-          axios.get(`http://localhost:5001/api/requests/my-requests/${userId}`),
-          axios.get(`http://localhost:5001/api/requests/hospital/all`),
-          axios.get(`http://localhost:5001/api/requests/stats/demand`)
-            .catch(() => null)
-        ]);
+const [privateRes, hospitalRes, statsRes] = await Promise.all([
+  API.get(`/requests/my-requests/${userId}`),
 
+  API.get(`/requests/hospital/all`),
+
+  API.get(`/requests/stats/demand`)
+    .catch(() => null)
+]);
         if (privateRes?.data?.success) {
           setRequests(privateRes.data.requests || []);
         }
@@ -159,12 +160,12 @@ const Dashboard = () => {
 
     try {
 
-      const res = await axios.patch(
-        `http://localhost:5001/api/requests/status/${type}/${id}`,
-        {
-          status: 'Accepted'
-        }
-      );
+const res = await API.patch(
+  `/requests/status/${type}/${id}`,
+  {
+    status: "Accepted",
+  }
+);
 
       if (res.data.success) {
 
@@ -644,4 +645,5 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 // Added 'Users' to the import list below
 import { Search, MapPin, Loader2, Phone, X, Calendar, Droplet, Users } from 'lucide-react';
-import axios from 'axios';
+import API from "../api/axios";
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
@@ -26,7 +26,8 @@ const FindDonors = () => {
   const handleSearch = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`http://localhost:5001/api/donors/search`, {
+      const response = await API.get(
+  `/donors/search`, {
         params: {
           bloodGroup: bloodGroup === 'All Groups' ? '' : bloodGroup,
           location: location
@@ -61,7 +62,7 @@ const FindDonors = () => {
         requesterPhone: loggedInUser.phone, 
         message: `Urgent requirement for ${selectedDonor.bloodGroup} blood in ${selectedDonor.location}. Requested by ${loggedInUser.name}.`
       };
-      const response = await axios.post('http://localhost:5001/api/requests/send', requestData);
+      const response = await API.post('/requests/send', requestData);
       if (response.data.success) {
         toast.success("Contact request sent successfully!");
         setSelectedDonor(null);
@@ -221,3 +222,4 @@ const FindDonors = () => {
 };
 
 export default FindDonors;
+
