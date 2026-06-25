@@ -171,17 +171,67 @@ useEffect(() => {
           ))}
           
           {/* Dashboard link remains visible for logged-in users */}
-          {user && (
-            <Link
-              to="/dashboard"
-              className={`text-sm font-bold transition-all hover:text-red-600 flex items-center gap-1.5 ${
-                isActive('/dashboard') ? 'text-red-600' : 'text-gray-600'
-              }`}
-            >
-              <LayoutDashboard size={16} />
-              Dashboard
-            </Link>
-          )}
+{user?.role === "donor" && (
+  <Link
+    to="/dashboard"
+    className={`text-sm font-bold transition-all hover:text-red-600 flex items-center gap-1.5 ${
+      isActive("/dashboard") ? "text-red-600" : "text-gray-600"
+    }`}
+  >
+    <LayoutDashboard size={16} />
+    Dashboard
+  </Link>
+)}
+
+{user?.role === "hospital" && (
+  <>
+    <Link
+      to="/hospital-dashboard"
+      className={`text-sm font-bold transition-all hover:text-red-600 ${
+        isActive("/hospital-dashboard")
+          ? "text-red-600"
+          : "text-gray-600"
+      }`}
+    >
+      Dashboard
+    </Link>
+
+    <Link
+      to="/hospital-analytics"
+      className={`text-sm font-bold transition-all hover:text-red-600 ${
+        isActive("/hospital-analytics")
+          ? "text-red-600"
+          : "text-gray-600"
+      }`}
+    >
+      Analytics
+    </Link>
+
+    <Link
+      to="/inventory"
+      className={`text-sm font-bold transition-all hover:text-red-600 ${
+        isActive("/inventory")
+          ? "text-red-600"
+          : "text-gray-600"
+      }`}
+    >
+      Inventory
+    </Link>
+  </>
+)}
+
+{user?.role === "admin" && (
+  <Link
+    to="/admin-dashboard"
+    className={`text-sm font-bold transition-all hover:text-red-600 ${
+      isActive("/admin-dashboard")
+        ? "text-red-600"
+        : "text-gray-600"
+    }`}
+  >
+    Admin
+  </Link>
+)}
         </div>
 
         {/* Action Buttons */}
