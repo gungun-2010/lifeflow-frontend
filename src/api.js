@@ -16,3 +16,4 @@ export const fetchDonors = (bg, loc) =>
   );
 
 export default API;
+
