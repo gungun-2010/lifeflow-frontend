@@ -34,10 +34,15 @@ const AdminUsers = () => {
     }
   };
 
-  const viewUser = async (id) => {
+const viewUser = async (id) => {
+
+  console.log("Clicked View:", id);
+
   try {
 
     const res = await API.get(`/admin/users/${id}`);
+
+    console.log("Response:", res.data);
 
     setSelectedUser(res.data.user);
 
@@ -45,17 +50,21 @@ const AdminUsers = () => {
 
   } catch (error) {
 
-    console.error("Failed to fetch user:", error);
+    console.error(error);
 
   }
+
 };
 
-  useEffect(() => {
-    fetchUsers();
-  }, [search, role, status]);
+useEffect(() => {
+  fetchUsers();
+}, [search, role, status]);
 
-  return (
-    <div className="max-w-7xl mx-auto p-8">
+console.log("openModal:", openModal);
+console.log("selectedUser:", selectedUser);
+
+return (
+  <div className="max-w-7xl mx-auto p-8">
 
       {/* Header */}
       <div className="mb-8">
@@ -298,7 +307,13 @@ const AdminUsers = () => {
 
         </div>
 
-      )}
+  )}
+
+      <UserModal
+        open={openModal}
+        user={selectedUser}
+        onClose={() => setOpenModal(false)}
+      />
 
     </div>
   );
