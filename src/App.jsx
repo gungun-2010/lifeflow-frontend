@@ -48,6 +48,8 @@ from "./pages/HospitalAnalytics";
 import HospitalDonations from "./pages/HospitalDonations";
 import Notifications from "./pages/Notifications";
 
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminUsers from "./pages/AdminUsers";
 
 
 
@@ -323,6 +325,25 @@ function App() {
               }
             />
 
+            <Route
+  path="/admin-dashboard"
+  element={
+    <ProtectedRoute allowedRoles={["admin"]}>
+      <AdminDashboard />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/admin/users"
+  element={
+    <ProtectedRoute
+      allowedRoles={["admin"]}
+    >
+      <AdminUsers />
+    </ProtectedRoute>
+  }
+/>
 
             {/* ====================================================== */}
             {/* 404 PAGE */}
