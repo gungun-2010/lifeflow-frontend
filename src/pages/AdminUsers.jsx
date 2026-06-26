@@ -3,6 +3,7 @@ import EditUserModal from "../components/admin/users/EditUserModal";
 import React, { useEffect, useState } from "react";
 import API from "../api/axios";
 import { Eye, Pencil, Ban, Trash2 } from "lucide-react";
+import ConfirmActionModal from "../components/admin/users/ConfirmActionModal";
 
 const AdminUsers = () => {
   const [users, setUsers] = useState([]);
@@ -17,6 +18,45 @@ const AdminUsers = () => {
   const [openModal, setOpenModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
   const [editUser, setEditUser] = useState(null);
+
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [selectedActionUser, setSelectedActionUser] = useState(null);
+
+  const openStatusModal = (user) => {
+
+  setSelectedActionUser(user);
+
+  setConfirmOpen(true);
+
+};
+
+const toggleUserStatus = async () => {
+
+  try {
+
+    await API.patch(
+
+      `/admin/users/${selectedActionUser._id}/status`,
+
+      {
+        isBlocked: !selectedActionUser.isBlocked
+      }
+
+    );
+
+    setConfirmOpen(false);
+
+    fetchUsers();
+
+  }
+
+  catch (error) {
+
+    console.error(error);
+
+  }
+
+};
 
   const fetchUsers = async () => {
     try {
@@ -340,18 +380,43 @@ return (
 
 
     {/* Block */}
-    <button
-      className="
-        p-2
-        rounded-lg
-        bg-red-100
-        hover:bg-red-200
-        text-red-700
-        transition-all
-      "
-    >
-      <Ban size={18} />
-    </button>
+<button
+
+  onClick={() => openStatusModal(user)}
+
+  className={`
+
+    px-3
+
+    py-2
+
+    rounded-lg
+
+    text-white
+
+    transition
+
+    ${user.isBlocked
+
+      ? "bg-green-600 hover:bg-green-700"
+
+      : "bg-red-600 hover:bg-red-700"
+
+    }
+
+  `}
+
+>
+
+  {user.isBlocked
+
+    ? "Unblock"
+
+    : "Block"
+
+  }
+
+</button>
 
     {/* Delete */}
     <button
@@ -399,7 +464,43 @@ return (
   onUserUpdated={fetchUsers}
 />
 
+<ConfirmActionModal
+
+  open={confirmOpen}
+
+  title={
+    selectedActionUser?.isBlocked
+      ? "Unblock User"
+      : "Block User"
+  }
+
+  message={
+    selectedActionUser?.isBlocked
+      ? `Allow ${selectedActionUser?.name} to login again?`
+      : `Are you sure you want to block ${selectedActionUser?.name}? This user will no longer be able to login.`
+  }
+
+  confirmText={
+    selectedActionUser?.isBlocked
+      ? "Unblock"
+      : "Block"
+  }
+
+  confirmColor={
+    selectedActionUser?.isBlocked
+      ? "bg-green-600 hover:bg-green-700"
+      : "bg-red-600 hover:bg-red-700"
+  }
+
+  onConfirm={toggleUserStatus}
+
+  onClose={() => setConfirmOpen(false)}
+
+/>
+
     </div>
+
+    
   );
 };
 
