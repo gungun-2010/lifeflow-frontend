@@ -1,6 +1,8 @@
 import UserModal from "../components/admin/users/UserModal";
+import EditUserModal from "../components/admin/users/EditUserModal";
 import React, { useEffect, useState } from "react";
 import API from "../api/axios";
+import { Eye, Pencil, Ban, Trash2 } from "lucide-react";
 
 const AdminUsers = () => {
   const [users, setUsers] = useState([]);
@@ -13,6 +15,8 @@ const AdminUsers = () => {
   const [selectedUser, setSelectedUser] = useState(null);
 
   const [openModal, setOpenModal] = useState(false);
+  const [editModal, setEditModal] = useState(false);
+  const [editUser, setEditUser] = useState(null);
 
   const fetchUsers = async () => {
     try {
@@ -36,6 +40,11 @@ const AdminUsers = () => {
 
 const viewUser = async (id) => {
 
+  const handleEdit = (user) => {
+  setEditUser(user);
+  setEditModal(true);
+};
+
   console.log("Clicked View:", id);
 
   try {
@@ -47,6 +56,24 @@ const viewUser = async (id) => {
     setSelectedUser(res.data.user);
 
     setOpenModal(true);
+
+  } catch (error) {
+
+    console.error(error);
+
+  }
+
+};
+
+const handleEdit = async (id) => {
+
+  try {
+
+    const res = await API.get(`/admin/users/${id}`);
+
+    setEditUser(res.data.user);
+
+    setEditModal(true);
 
   } catch (error) {
 
@@ -277,20 +304,70 @@ return (
 
 <td className="px-6 py-5">
 
+<div className="flex items-center gap-2">
+
+  {/* View */}
+
   <button
     onClick={() => viewUser(user._id)}
     className="
       bg-blue-600
       hover:bg-blue-700
       text-white
-      px-4
+      px-3
       py-2
       rounded-lg
-      transition-all
     "
   >
     View
   </button>
+
+  {/* Edit */}
+
+  <button
+    onClick={() => handleEdit(user._id)}
+    className="
+      bg-yellow-500
+      hover:bg-yellow-600
+      text-white
+      px-3
+      py-2
+      rounded-lg
+    "
+  >
+    Edit
+  </button>
+
+
+    {/* Block */}
+    <button
+      className="
+        p-2
+        rounded-lg
+        bg-red-100
+        hover:bg-red-200
+        text-red-700
+        transition-all
+      "
+    >
+      <Ban size={18} />
+    </button>
+
+    {/* Delete */}
+    <button
+      className="
+        p-2
+        rounded-lg
+        bg-gray-200
+        hover:bg-gray-300
+        text-gray-700
+        transition-all
+      "
+    >
+      <Trash2 size={18} />
+    </button>
+
+  </div>
 
 </td>
                     
@@ -315,8 +392,16 @@ return (
         onClose={() => setOpenModal(false)}
       />
 
+      <EditUserModal
+  open={editModal}
+  user={editUser}
+  onClose={() => setEditModal(false)}
+  onUserUpdated={fetchUsers}
+/>
+
     </div>
   );
 };
 
 export default AdminUsers;
+
