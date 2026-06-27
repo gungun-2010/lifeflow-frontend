@@ -185,9 +185,15 @@ const Login = () => {
 
         success: (msg) => msg,
 
-        error: (err) =>
-          err.message ||
-          "Invalid email or password"
+        error: (err) => {
+
+  return (
+    err.response?.data?.message ||
+    err.message ||
+    "Invalid email or password"
+  );
+
+}
       }
 
     );

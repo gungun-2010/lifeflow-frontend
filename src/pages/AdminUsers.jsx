@@ -1,9 +1,16 @@
+import {
+  Eye,
+  Pencil,
+  Ban,
+  Trash2,
+  CheckCircle
+} from "lucide-react";
 import UserModal from "../components/admin/users/UserModal";
 import EditUserModal from "../components/admin/users/EditUserModal";
 import React, { useEffect, useState } from "react";
 import API from "../api/axios";
-import { Eye, Pencil, Ban, Trash2 } from "lucide-react";
 import ConfirmActionModal from "../components/admin/users/ConfirmActionModal";
+import UserPagination from "../components/admin/users/UserPagination";
 
 const AdminUsers = () => {
   const [users, setUsers] = useState([]);
@@ -22,11 +29,28 @@ const AdminUsers = () => {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [selectedActionUser, setSelectedActionUser] = useState(null);
 
+  const [deleteOpen, setDeleteOpen] = useState(false);
+
+  const [deleteUserData, setDeleteUserData] = useState(null);
+
+  const [page, setPage] = useState(1);
+
+const [pagination, setPagination] =
+useState(null);
+
   const openStatusModal = (user) => {
 
   setSelectedActionUser(user);
 
   setConfirmOpen(true);
+
+};
+
+const openDeleteModal = (user) => {
+
+  setDeleteUserData(user);
+
+  setDeleteOpen(true);
 
 };
 
@@ -58,19 +82,54 @@ const toggleUserStatus = async () => {
 
 };
 
+const deleteUser = async () => {
+
+  console.log("Delete function called");
+
+  try {
+
+    await API.delete(`/admin/users/${deleteUserData._id}`);
+
+    console.log("User deleted");
+
+    setDeleteOpen(false);
+
+    fetchUsers();
+
+  } catch (error) {
+
+    console.error(error);
+
+  }
+
+};
+
   const fetchUsers = async () => {
     try {
       setLoading(true);
 
       const res = await API.get("/admin/users", {
-        params: {
-          search,
-          role,
-          status,
-        },
+       params:{
+
+search,
+
+role,
+
+status,
+
+page,
+
+limit:10
+
+},
       });
 
       setUsers(res.data.users);
+
+setPagination(
+  res.data.pagination
+);
+      setPagination(res.data.pagination);
     } catch (error) {
       console.error("Failed to fetch users:", error);
     } finally {
@@ -125,7 +184,12 @@ const handleEdit = async (id) => {
 
 useEffect(() => {
   fetchUsers();
-}, [search, role, status]);
+}, [
+search,
+role,
+status,
+page
+]);
 
 console.log("openModal:", openModal);
 console.log("selectedUser:", selectedUser);
@@ -218,9 +282,9 @@ return (
 
       ) : (
 
-        <div className="bg-white rounded-3xl shadow-md overflow-hidden">
+        <div className="bg-white rounded-3xl shadow-md overflow-x-auto">
 
-          <table className="w-full">
+          <table className="min-w-[1350px] w-full">
 
             <thead className="bg-gray-100">
 
@@ -242,15 +306,15 @@ return (
                   Role
                 </th>
 
-                <th className="text-left px-6 py-4">
-                  Location
-                </th>
+<th className="text-center px-6 py-4 w-48">
+  Actions
+</th>
 
 <th className="text-left px-6 py-4">
   Status
 </th>
 
-<th className="text-left px-6 py-4">
+<th className="text-center px-6 py-4 w-52">
   Actions
 </th>
 
@@ -296,15 +360,15 @@ return (
                       {user.name}
                     </td>
 
-                    <td className="px-6 py-5">
+                    <td className="px-6 py-5 w-[260px]">
                       {user.email}
                     </td>
 
-                    <td className="px-6 py-5">
+                    <td className="px-6 py-5 w-[260px]">
                       {user.phone}
                     </td>
 
-                    <td className="px-6 py-5">
+                    <td className="px-6 py-5 w-[260px]">
 
                       <span
                         className={`px-3 py-1 rounded-full text-sm font-semibold ${
@@ -320,11 +384,11 @@ return (
 
                     </td>
 
-<td className="px-6 py-5">
+<td className="px-6 py-5 w-[260px]">
   {user.location}
 </td>
 
-<td className="px-6 py-5">
+<td className="px-6 py-5 w-[260px]">
 
   {user.isBlocked ? (
 
@@ -342,95 +406,87 @@ return (
 
 </td>
 
-<td className="px-6 py-5">
+<td className="px-6 py-5 text-center">
 
-<div className="flex items-center gap-2">
+  <div className="flex items-center justify-center gap-3">
 
-  {/* View */}
+    {/* View */}
+    <button
+      onClick={() => viewUser(user._id)}
+      title="View User"
+      className="
+        w-10 h-10
+        rounded-full
+        bg-blue-50
+        text-blue-600
+        hover:bg-blue-600
+        hover:text-white
+        transition-all
+        duration-200
+      "
+    >
+      <Eye size={18} className="mx-auto" />
+    </button>
 
-  <button
-    onClick={() => viewUser(user._id)}
-    className="
-      bg-blue-600
-      hover:bg-blue-700
-      text-white
-      px-3
-      py-2
-      rounded-lg
-    "
-  >
-    View
-  </button>
+    {/* Edit */}
+    <button
+      onClick={() => handleEdit(user._id)}
+      title="Edit User"
+      className="
+        w-10 h-10
+        rounded-full
+        bg-amber-50
+        text-amber-600
+        hover:bg-amber-500
+        hover:text-white
+        transition-all
+        duration-200
+      "
+    >
+      <Pencil size={18} className="mx-auto" />
+    </button>
 
-  {/* Edit */}
-
-  <button
-    onClick={() => handleEdit(user._id)}
-    className="
-      bg-yellow-500
-      hover:bg-yellow-600
-      text-white
-      px-3
-      py-2
-      rounded-lg
-    "
-  >
-    Edit
-  </button>
-
-
-    {/* Block */}
-<button
-
-  onClick={() => openStatusModal(user)}
-
-  className={`
-
-    px-3
-
-    py-2
-
-    rounded-lg
-
-    text-white
-
-    transition
-
-    ${user.isBlocked
-
-      ? "bg-green-600 hover:bg-green-700"
-
-      : "bg-red-600 hover:bg-red-700"
-
-    }
-
-  `}
-
->
-
-  {user.isBlocked
-
-    ? "Unblock"
-
-    : "Block"
-
-  }
-
-</button>
+    {/* Block / Unblock */}
+    <button
+      onClick={() => openStatusModal(user)}
+      title={user.isBlocked ? "Unblock User" : "Block User"}
+      className={`
+        w-10 h-10
+        rounded-full
+        transition-all
+        duration-200
+        ${
+          user.isBlocked
+            ? "bg-green-50 text-green-600 hover:bg-green-600 hover:text-white"
+            : "bg-red-50 text-red-600 hover:bg-red-600 hover:text-white"
+        }
+      `}
+    >
+      {user.isBlocked ? (
+        <CheckCircle size={18} className="mx-auto" />
+      ) : (
+        <Ban size={18} className="mx-auto" />
+      )}
+    </button>
 
     {/* Delete */}
     <button
-      className="
-        p-2
-        rounded-lg
-        bg-gray-200
-        hover:bg-gray-300
-        text-gray-700
-        transition-all
-      "
-    >
-      <Trash2 size={18} />
-    </button>
+  title="Delete User"
+  onClick={() => openDeleteModal(user)}
+  className="
+    w-10
+    h-10
+    rounded-full
+    bg-gray-100
+    text-gray-600
+    hover:bg-red-600
+    hover:text-white
+    transition-all
+    duration-200
+  "
+>
+  <Trash2 size={18} className="mx-auto" />
+</button>
 
   </div>
 
@@ -451,6 +507,11 @@ return (
 
   )}
 
+      <UserPagination
+  pagination={pagination}
+  onPageChange={setPage}
+/>
+
       <UserModal
         open={openModal}
         user={selectedUser}
@@ -465,37 +526,39 @@ return (
 />
 
 <ConfirmActionModal
-
   open={confirmOpen}
-
   title={
     selectedActionUser?.isBlocked
       ? "Unblock User"
       : "Block User"
   }
-
   message={
     selectedActionUser?.isBlocked
       ? `Allow ${selectedActionUser?.name} to login again?`
       : `Are you sure you want to block ${selectedActionUser?.name}? This user will no longer be able to login.`
   }
-
   confirmText={
     selectedActionUser?.isBlocked
       ? "Unblock"
       : "Block"
   }
-
   confirmColor={
     selectedActionUser?.isBlocked
       ? "bg-green-600 hover:bg-green-700"
       : "bg-red-600 hover:bg-red-700"
   }
-
   onConfirm={toggleUserStatus}
-
   onClose={() => setConfirmOpen(false)}
+/>
 
+<ConfirmActionModal
+  open={deleteOpen}
+  title="Delete User"
+  message={`Are you sure you want to permanently delete ${deleteUserData?.name}? This action cannot be undone.`}
+  confirmText="Delete"
+  confirmColor="bg-red-600 hover:bg-red-700"
+  onConfirm={deleteUser}
+  onClose={() => setDeleteOpen(false)}
 />
 
     </div>

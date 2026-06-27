@@ -74,6 +74,7 @@ import HospitalDashboard from "./pages/HospitalDashboard";
 import Inventory from "./pages/Inventory";
 
 import AdminPanel from "./pages/AdminPanel";
+import AdminHospitals from "./pages/AdminHospitals";
 
 
 // ======================================================
@@ -341,6 +342,15 @@ function App() {
       allowedRoles={["admin"]}
     >
       <AdminUsers />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/admin/hospitals"
+  element={
+    <ProtectedRoute allowedRoles={["admin"]}>
+      <AdminHospitals />
     </ProtectedRoute>
   }
 />
