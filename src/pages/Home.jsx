@@ -1,5 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+// 1. IMPORT YOUR NEW SMART SEARCH BAR COMPONENT HERE
+import SmartSearchBar from '../components/SmartSearchBar';
 import DemandChart from '../components/DemandChart';
 import { Heart, Search, ShieldCheck, Droplet, TrendingUp } from 'lucide-react';
 
@@ -46,8 +48,14 @@ const Home = () => {
             <p className="mt-10 text-xl md:text-2xl text-gray-600 max-w-3xl leading-relaxed font-medium">
               Join the LifeFlow network. Whether you are looking for a donor in an emergency or want to donate, we make the process seamless and verified.
             </p>
+             
+             {/* 2. REPLACED OLD BUTTONS ROW WITH THE SMART AI SEARCH COMPONENT */}
+            <SmartSearchBar />
+            
+           </div>
+           </section>
 
-            <div className="mt-14 flex flex-col sm:flex-row gap-6 w-full sm:w-auto">
+            {/* <div className="mt-14 flex flex-col sm:flex-row gap-6 w-full sm:w-auto">
               <Link 
                 to="/find-donors" 
                 className="bg-red-600 text-white px-12 py-5 rounded-[2rem] font-black text-xl hover:bg-red-700 shadow-2xl shadow-red-200 transition-all flex items-center justify-center gap-3 active:scale-95"
@@ -62,7 +70,7 @@ const Home = () => {
               </Link>
             </div>
         </div>
-      </section>
+      </section> */}
 
       {/* --- ANALYTICS SECTION --- */}
       <section className="w-full bg-gray-50 py-32 border-y border-gray-100">

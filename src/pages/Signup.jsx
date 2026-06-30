@@ -139,7 +139,7 @@ const handleSubmit = async (e) => {
                 value={formData.name}
                 onChange={handleChange} 
                 className={`w-full pl-12 pr-4 py-4 bg-gray-50 border rounded-2xl focus:ring-4 focus:bg-white focus:outline-none transition-all font-medium ${errors.name ? 'border-red-500 focus:ring-red-50' : 'border-transparent focus:border-red-600 focus:ring-red-50'}`} 
-                placeholder="Piyush Kumar" 
+                placeholder="Gungun Singh" 
               />
             </div>
             {errors.name && <p className="text-red-500 text-xs font-bold mt-2 ml-1">{errors.name}</p>}
@@ -156,7 +156,7 @@ const handleSubmit = async (e) => {
                 value={formData.email}
                 onChange={handleChange} 
                 className={`w-full pl-12 pr-4 py-4 bg-gray-50 border rounded-2xl focus:ring-4 focus:bg-white focus:outline-none transition-all font-medium ${errors.email ? 'border-red-500 focus:ring-red-50' : 'border-transparent focus:border-red-600 focus:ring-red-50'}`} 
-                placeholder="piyush@example.com" 
+                placeholder="gungun@example.com" 
               />
             </div>
             {errors.email && <p className="text-red-500 text-xs font-bold mt-2 ml-1">{errors.email}</p>}
@@ -272,7 +272,7 @@ const handleSubmit = async (e) => {
                 value={formData.location}
                 onChange={handleChange} 
                 className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-transparent rounded-2xl focus:ring-4 focus:ring-red-50 focus:border-red-600 focus:bg-white outline-none transition-all font-medium" 
-                placeholder="Mandi, HP" 
+                placeholder="Patna, Bihar" 
               />
             </div>
           </div>

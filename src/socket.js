@@ -1,7 +1,8 @@
 import { io } from "socket.io-client";
 
 const socket = io(
-  "https://lifeflow-backend-5rm3.onrender.com",
+  //"https://lifeflow-backend-5rm3.onrender.com",
+  "http://localhost:3001", //changed-> 3001/api to 3001
   {
     transports: ["websocket"],
     autoConnect: true
